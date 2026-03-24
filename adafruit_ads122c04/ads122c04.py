@@ -25,13 +25,15 @@ Implementation Notes
 * Adafruit's Bus Device library: https://github.com/adafruit/Adafruit_CircuitPython_BusDevice
 """
 
-import time
 import struct
-from micropython import const
+import time
+
 from adafruit_bus_device.i2c_device import I2CDevice
+from micropython import const
 
 try:
     from typing import Optional
+
     from busio import I2C
 except ImportError:
     pass
@@ -165,7 +167,7 @@ IDAC_ROUTE_REFN = const(0x06)
 _GAIN_VALUES = (1, 2, 4, 8, 16, 32, 64, 128)
 
 
-class ADS122C04:
+class ADS122C04:  # noqa: PLR0904
     """Driver for the ADS122C04 24-bit ADC.
 
     :param I2C i2c: The I2C bus the ADS122C04 is connected to.
@@ -192,14 +194,12 @@ class ADS122C04:
                 crc = self._calculate_crc16(self._buf3, 1)
                 received = (self._buf3[1] << 8) | self._buf3[2]
                 if crc != received:
-                    raise IOError("CRC validation failed on register read")
+                    raise OSError("CRC validation failed on register read")
                 return self._buf3[0]
             if self._crc_mode_cache == CRC_INVERTED:
                 i2c.readinto(self._buf2)
                 if self._buf2[0] != (~self._buf2[1] & 0xFF):
-                    raise IOError(
-                        "Inverted data validation failed on register read"
-                    )
+                    raise OSError("Inverted data validation failed on register read")
                 return self._buf2[0]
             i2c.readinto(self._buf1)
             return self._buf1[0]
@@ -214,9 +214,7 @@ class ADS122C04:
         mask = ((1 << num_bits) - 1) << shift
         return (self._read_register(register) & mask) >> shift
 
-    def _write_bits(
-        self, register: int, num_bits: int, shift: int, value: int
-    ) -> None:
+    def _write_bits(self, register: int, num_bits: int, shift: int, value: int) -> None:
         mask = ((1 << num_bits) - 1) << shift
         reg = self._read_register(register)
         reg = (reg & ~mask) | ((value << shift) & mask)
@@ -269,7 +267,7 @@ class ADS122C04:
             received_crc = (buf[3] << 8) | buf[4]
             calculated_crc = self._calculate_crc16(buf, 3)
             if received_crc != calculated_crc:
-                raise IOError("CRC16 validation failed on data read")
+                raise OSError("CRC16 validation failed on data read")
 
         if self._crc_mode_cache == CRC_INVERTED:
             if (
@@ -277,7 +275,7 @@ class ADS122C04:
                 or buf[1] != (~buf[4] & 0xFF)
                 or buf[2] != (~buf[5] & 0xFF)
             ):
-                raise IOError("Inverted data validation failed on data read")
+                raise OSError("Inverted data validation failed on data read")
 
         self._last_data_valid = True
 
@@ -317,7 +315,8 @@ class ADS122C04:
         raw = self.read_data()
         return self.convert_to_temperature(raw)
 
-    def convert_to_temperature(self, raw_data: int) -> float:
+    @staticmethod
+    def convert_to_temperature(raw_data: int) -> float:
         """Convert a raw ADC reading to temperature (when in temperature sensor mode).
 
         :param int raw_data: Signed 24-bit raw ADC value.

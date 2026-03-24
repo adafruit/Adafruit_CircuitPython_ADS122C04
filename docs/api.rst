@@ -7,5 +7,8 @@
 API Reference
 #############
 
-.. automodule:: adafruit_ads122c04
+.. automodule:: adafruit_ads122c04.ads122c04
+    :members:
+
+.. automodule:: adafruit_ads122c04.analog_in
     :members:

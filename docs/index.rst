@@ -24,14 +24,12 @@ Table of Contents
 .. toctree::
     :caption: Tutorials
 
-.. todo:: Add any Learn guide links here. If there are none, then simply delete this todo and leave
-    the toctree above for use later.
+    Adafruit ADS122C04 24-Bit ADC Learn Guide <https://learn.adafruit.com/adafruit-ads122c04-24-bit-adc>
 
 .. toctree::
     :caption: Related Products
 
-.. todo:: Add any product links here. If there are none, then simply delete this todo and leave
-    the toctree above for use later.
+    Adafruit ADS122C04 24-Bit ADC - 4 Channel 2-kSPS - STEMMA QT / Qwiic <https://www.adafruit.com/product/6432>
 
 .. toctree::
     :caption: Other Links

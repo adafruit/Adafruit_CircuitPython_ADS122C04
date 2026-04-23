@@ -50,8 +50,7 @@ class AnalogIn:
             pass
         raw = self._adc.read_data()
         # Clamp negative values to 0, then scale 24-bit positive range to 16-bit
-        if raw < 0:
-            raw = 0
+        raw = max(raw, 0)
         # 24-bit positive max is 0x7FFFFF (8388607)
         # Scale to 16-bit range: raw * 65535 / 8388607
         return min((raw * 65535) // 8388607, 65535)
